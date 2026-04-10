@@ -3,112 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UniCon | SLG Pricing Calculator</title>
+    <title>UniCon | Dynamic SLG Pricing</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
-        .gradient-text { background: linear-gradient(135deg, #1D9E75 0%, #0F6E56 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; }
         .tab-active { background: #1D9E75 !important; color: white !important; border-color: #1D9E75 !important; box-shadow: 0 4px 12px rgba(29, 158, 117, 0.2); }
         .card-selected { border: 2px solid #1D9E75 !important; background: #f0fdf4 !important; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 20px; height: 20px; background: #1D9E75; cursor: pointer; border-radius: 50%; }
     </style>
 </head>
-<body class="p-4 md:p-8">
+<body class="p-4 md:p-12">
 
-    <div class="max-w-5xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-200">
-        <div class="bg-slate-50 border-b border-slate-200 p-8 text-center">
-            <h1 class="text-3xl font-bold text-slate-900 mb-2">Service Level Agreement (SLG) Pricing</h1>
-            <p class="text-slate-500 max-w-2xl mx-auto">Professional listing and onboarding services for UniCon users. Optimized for high-volume catalogs with built-in multi-channel rewards.</p>
+    <div class="max-w-6xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-200">
+        <div class="bg-slate-900 p-8 text-white">
+            <div class="flex justify-between items-center mb-4">
+                <span class="text-emerald-400 font-bold tracking-tighter text-2xl">UniCon <span class="text-white font-light">Services</span></span>
+                <span class="bg-slate-800 px-4 py-1 rounded-full text-xs font-mono text-slate-400">v2.0 Dynamic Calculator</span>
+            </div>
+            <h1 class="text-3xl font-bold">SLG Pricing & Transparency Tool</h1>
+            <p class="text-slate-400 mt-2">Configure catalog size and channel count to see tiered volume rates.</p>
         </div>
 
-        <div class="p-6 md:p-10">
-            <div class="mb-10">
-                <label class="block text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">1. Select Service Level</label>
-                <div class="flex flex-wrap gap-3" id="service-tabs">
-                    <button onclick="setType('training')" data-type="training" class="tab active px-6 py-3 rounded-xl border border-slate-200 font-semibold text-slate-600 hover:bg-slate-50 transition-all">30-Day Support</button>
-                    <button onclick="setType('standard')" data-type="standard" class="tab px-6 py-3 rounded-xl border border-slate-200 font-semibold text-slate-600 hover:bg-slate-50 transition-all">Standard Listing</button>
-                    <button onclick="setType('advanced')" data-type="advanced" class="tab px-6 py-3 rounded-xl border border-slate-200 font-semibold text-slate-600 hover:bg-slate-50 transition-all">Advanced Optimization</button>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-0">
+            
+            <div class="lg:col-span-4 p-8 border-r border-slate-100 bg-slate-50/50">
+                
+                <div class="space-y-10">
+                    <div>
+                        <label class="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-4">Service Level</label>
+                        <div class="grid grid-cols-1 gap-2">
+                            <button onclick="setType('training')" data-type="training" class="tab active w-full text-left px-4 py-3 rounded-xl border border-slate-200 font-semibold text-slate-600 hover:bg-white transition-all">30-Day Support</button>
+                            <button onclick="setType('standard')" data-type="standard" class="tab w-full text-left px-4 py-3 rounded-xl border border-slate-200 font-semibold text-slate-600 hover:bg-white transition-all">Standard Listing</button>
+                            <button onclick="setType('advanced')" data-type="advanced" class="tab w-full text-left px-4 py-3 rounded-xl border border-slate-200 font-semibold text-slate-600 hover:bg-white transition-all">Advanced Optimization</button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-4">Catalog Size</label>
+                        <div class="grid grid-cols-1 gap-3">
+                            <div id="band-container" class="space-y-2">
+                                </div>
+                        </div>
+                    </div>
+
+                    <div id="channel-control">
+                        <label class="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-2">Number of Channels</label>
+                        <div class="bg-white p-4 rounded-2xl border border-slate-200">
+                            <div class="flex justify-between font-bold text-slate-800 mb-2">
+                                <span id="channel-count-display">1 Channel</span>
+                                <span class="text-emerald-600">50% Add-on Disc.</span>
+                            </div>
+                            <input type="range" id="channel-slider" min="1" max="7" value="1" step="1" oninput="update()" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer">
+                            <div class="flex justify-between text-[10px] text-slate-400 mt-2 font-bold uppercase">
+                                <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="mb-10">
-                <label class="block text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">2. Catalog Size (Total Products)</label>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="band-grid">
-                    </div>
-            </div>
-
-            <div id="results" class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-                <div class="lg:col-span-2 space-y-6">
-                    <div class="bg-slate-50 rounded-2xl p-8 border border-slate-200 relative overflow-hidden">
-                        <div class="absolute top-0 right-0 p-4">
-                            <span id="badge" class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest"></span>
-                        </div>
-                        
-                        <div class="flex flex-col md:flex-row justify-between items-end gap-6">
-                            <div>
-                                <h3 id="result-label" class="text-slate-500 font-medium mb-1">Estimated Cost</h3>
-                                <div class="flex items-baseline gap-2">
-                                    <span id="main-price" class="text-5xl font-extrabold text-slate-900">$0</span>
-                                    <span id="unit-label" class="text-slate-400 font-medium">/ project</span>
-                                </div>
-                                <p id="price-subtext" class="text-slate-500 text-sm mt-2 font-medium"></p>
-                            </div>
-                            <div class="w-full md:w-auto">
-                                <button class="w-full bg-slate-900 text-white px-8 py-4 rounded-xl font-bold hover:bg-slate-800 transition-all shadow-lg shadow-slate-200">Generate Quote PDF</button>
+            <div class="lg:col-span-8 p-8 md:p-12">
+                
+                <div id="main-display">
+                    <div class="flex flex-col md:flex-row justify-between items-start gap-6 mb-10">
+                        <div>
+                            <span id="badge" class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-4 inline-block"></span>
+                            <h2 class="text-slate-400 font-medium">Estimated Project Investment</h2>
+                            <div class="flex items-baseline gap-2">
+                                <span id="main-price" class="text-6xl font-black text-slate-900">$0</span>
+                                <span class="text-slate-400 text-xl font-light">USD</span>
                             </div>
                         </div>
-
-                        <div id="logic-box" class="mt-8 pt-8 border-t border-slate-200 hidden">
-                            <div class="flex items-center gap-2 mb-4">
-                                <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                <span class="font-bold text-slate-700">How we calculate volume</span>
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                                <div class="bg-white p-4 rounded-lg border border-slate-100 shadow-sm">
-                                    <p class="text-slate-400 mb-1">Volume Reward</p>
-                                    <p class="text-slate-700 leading-relaxed">We use <span class="font-semibold">blended slab pricing</span>. Larger catalogs get a lower effective rate per product.</p>
-                                </div>
-                                <div class="bg-white p-4 rounded-lg border border-slate-100 shadow-sm">
-                                    <p class="text-slate-400 mb-1">Multi-Channel Discount</p>
-                                    <p class="text-slate-700 leading-relaxed">Additional channels are billed at <span class="font-semibold text-emerald-600">50% off</span> as we reuse attribute mapping.</p>
-                                </div>
-                            </div>
+                        <div class="text-left md:text-right">
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Effective Rate</p>
+                            <p id="blended-rate-display" class="text-2xl font-bold text-slate-800">$0.00</p>
+                            <p class="text-xs text-slate-500">per product / per channel</p>
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="bg-emerald-50 rounded-2xl p-6 border border-emerald-100">
-                            <h4 class="text-emerald-800 font-bold mb-4 flex items-center gap-2">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                Included Services
-                            </h4>
-                            <ul id="includes-list" class="space-y-3 text-sm text-emerald-900 font-medium opacity-80"></ul>
+                    <div id="transparency-section" class="mb-10">
+                        <h4 class="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2">
+                            <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            Pricing Transparency Breakdown
+                        </h4>
+                        <div class="bg-slate-50 rounded-2xl border border-slate-200 overflow-hidden text-sm">
+                            <table class="w-full text-left border-collapse">
+                                <thead class="bg-slate-100 text-slate-500 text-[10px] uppercase font-bold">
+                                    <tr>
+                                        <th class="p-4">Line Item</th>
+                                        <th class="p-4">Calculation</th>
+                                        <th class="p-4 text-right">Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="transparency-body" class="text-slate-700 font-medium">
+                                    </tbody>
+                                <tfoot class="bg-white border-t border-slate-200">
+                                    <tr class="font-bold text-slate-900">
+                                        <td class="p-4">Total Quote</td>
+                                        <td class="p-4"></td>
+                                        <td id="total-sum" class="p-4 text-right text-lg text-emerald-600"></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
                         </div>
-                        <div class="bg-rose-50 rounded-2xl p-6 border border-rose-100">
-                            <h4 class="text-rose-800 font-bold mb-4 flex items-center gap-2">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                                Exclusions
-                            </h4>
-                            <ul id="excludes-list" class="space-y-3 text-sm text-rose-900 font-medium opacity-80"></ul>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">What's Included</h4>
+                            <ul id="includes-list" class="space-y-3 text-sm text-slate-600"></ul>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Manager ROI Note</h4>
+                            <div class="bg-emerald-50 p-6 rounded-2xl border border-emerald-100">
+                                <p id="use-case" class="text-emerald-900 text-sm leading-relaxed"></p>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="space-y-6">
-                    <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
-                        <h4 class="text-slate-900 font-bold mb-4 uppercase text-xs tracking-widest">Use Case Scenario</h4>
-                        <p id="use-case" class="text-slate-600 text-sm leading-relaxed italic"></p>
-                    </div>
-                    
-                    <div id="roi-card" class="bg-indigo-600 rounded-2xl p-6 text-white shadow-xl shadow-indigo-100">
-                        <h4 class="font-bold mb-2">Break-even Signal</h4>
-                        <div id="roi-ratio" class="text-3xl font-bold mb-4">0%</div>
-                        <div class="w-full bg-indigo-800 rounded-full h-2 mb-4">
-                            <div id="roi-bar" class="bg-indigo-300 h-2 rounded-full transition-all" style="width: 0%"></div>
-                        </div>
-                        <p id="roi-text" class="text-indigo-100 text-xs leading-relaxed"></p>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -121,7 +135,6 @@
             { label: "Enterprise", range: "8,001-20,000", mid: 14000, desc: "High volume brand" },
         ];
 
-        // The critical SLAB math (Incremental Pricing)
         const SLABS = [
             { upTo: 500, standard: 0.80, advanced: 1.50 },
             { upTo: 1000, standard: 0.65, advanced: 1.20 },
@@ -132,26 +145,23 @@
 
         const CONTENT = {
             training: {
-                badge: "bg-blue-100 text-blue-700",
-                badgeText: "30-Day Support",
+                badge: "bg-blue-600 text-white",
+                badgeText: "Guided Implementation",
                 fees: [999, 1499, 1999, 2999],
-                includes: ["Dedicated expert for 30 days", "Up to 8-12 guided sessions", "SOP workflow documentation", "Full channel health check"],
-                excludes: ["Hands-on listing creation", "Image editing", "Copywriting Services"],
-                useCase: "Ideal for teams who want to manage operations in-house but need a pro to guide the setup and avoid common marketplace pitfalls."
+                includes: ["Dedicated eCommerce expert", "Guided mapping sessions", "Workflow SOP delivery", "Support via shared workspace"],
+                useCase: "Focuses on knowledge transfer. The team learns how to manage UniCon independently while we handle the technical guardrails."
             },
             standard: {
-                badge: "bg-amber-100 text-amber-700",
-                badgeText: "Efficiency Plus",
-                includes: ["Required attributes mapping", "Category taxonomy alignment", "Bulk upload execution", "Basic suppression fixes"],
-                excludes: ["AI attribute population", "Keyword research", "Marketing copy improvements"],
-                useCase: "Perfect for high-volume catalogs that need to launch on new channels quickly using existing product data."
+                badge: "bg-amber-500 text-white",
+                badgeText: "Standard Listing",
+                includes: ["Required attribute mapping", "Category taxonomy alignment", "Bulk upload execution", "Marketplace compliance"],
+                useCase: "Best for simple catalog expansions. High speed, low touch, ensuring products meet basic listing requirements."
             },
             advanced: {
-                badge: "bg-emerald-100 text-emerald-700",
-                badgeText: "High-Visibility",
-                includes: ["Required + Optional attributes", "AI-assisted content population", "Suppression audit & fix", "Marketplace-specific keywords"],
-                excludes: ["Graphic design services", "A+ / EBC creation", "New product photography"],
-                useCase: "Best for brands where discoverability is key. We fill the gaps in your data to ensure you show up in every filter."
+                badge: "bg-emerald-600 text-white",
+                badgeText: "Advanced Optimization",
+                includes: ["All required + Optional attributes", "AI Content Population", "Suppression Audit & Fix", "Channel-specific logic"],
+                useCase: "Our most popular choice for Enterprise. Ensures maximum filter discoverability and higher organic ranking."
             }
         };
 
@@ -164,6 +174,8 @@
                 t.classList.remove('tab-active');
                 if(t.dataset.type === type) t.classList.add('tab-active');
             });
+            document.getElementById('channel-control').style.opacity = type === 'training' ? '0.3' : '1';
+            document.getElementById('channel-control').style.pointerEvents = type === 'training' ? 'none' : 'auto';
             update();
         }
 
@@ -187,63 +199,85 @@
         function update() {
             const data = CONTENT[currentType];
             const band = BANDS[currentBandIndex];
-            
+            const channelCount = parseInt(document.getElementById('channel-slider').value);
+            document.getElementById('channel-count-display').innerText = `${channelCount} ${channelCount > 1 ? 'Channels' : 'Channel'}`;
+
             // Render Bands
-            const bandGrid = document.getElementById('band-grid');
-            bandGrid.innerHTML = BANDS.map((b, i) => `
-                <div onclick="setBand(${i})" class="cursor-pointer border-2 transition-all p-5 rounded-2xl ${i === currentBandIndex ? 'card-selected' : 'border-slate-100 bg-white hover:border-slate-200'}">
-                    <p class="text-[10px] uppercase font-bold text-slate-400 tracking-widest mb-1">${b.label}</p>
-                    <p class="text-lg font-bold text-slate-800">${b.range}</p>
-                    <p class="text-xs text-slate-500 mt-1">${b.desc}</p>
+            const bandContainer = document.getElementById('band-container');
+            bandContainer.innerHTML = BANDS.map((b, i) => `
+                <div onclick="setBand(${i})" class="cursor-pointer border-2 transition-all px-4 py-3 rounded-xl flex justify-between items-center ${i === currentBandIndex ? 'card-selected border-emerald-500' : 'border-white bg-white hover:border-slate-200'}">
+                    <div>
+                        <p class="text-sm font-bold text-slate-800">${b.label}</p>
+                        <p class="text-[10px] text-slate-500 uppercase tracking-widest">${b.range} SKUs</p>
+                    </div>
+                    <div class="${i === currentBandIndex ? 'opacity-100' : 'opacity-0'}">
+                        <svg class="w-5 h-5 text-emerald-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                    </div>
                 </div>
             `).join('');
 
-            // Calculate Logic
-            const badge = document.getElementById('badge');
-            badge.className = `px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${data.badge}`;
-            badge.innerText = data.badgeText;
-
-            const unitLabel = document.getElementById('unit-label');
             const mainPrice = document.getElementById('main-price');
-            const subtext = document.getElementById('price-subtext');
-            const logicBox = document.getElementById('logic-box');
+            const transparencyBody = document.getElementById('transparency-body');
+            const blendedDisplay = document.getElementById('blended-rate-display');
+            const totalSum = document.getElementById('total-sum');
+            
+            let totalInvestment = 0;
+            let transparencyHTML = '';
 
             if(currentType === 'training') {
-                const fee = data.fees[currentBandIndex];
-                mainPrice.innerText = `$${fee.toLocaleString()}`;
-                unitLabel.innerText = '/ engagement';
-                subtext.innerText = `Includes setup for up to ${currentBandIndex <= 1 ? 2 : currentBandIndex + 1} channels.`;
-                logicBox.classList.add('hidden');
-                updateROI(fee, 1);
+                totalInvestment = data.fees[currentBandIndex];
+                blendedDisplay.innerText = "N/A";
+                transparencyHTML = `
+                    <tr>
+                        <td class="p-4 italic">30-Day Training Program</td>
+                        <td class="p-4 text-slate-400">Flat Fee (${band.label} Tier)</td>
+                        <td class="p-4 text-right">$${totalInvestment.toLocaleString()}</td>
+                    </tr>
+                `;
             } else {
-                const rate = calculateBlended(band.mid, currentType);
-                const baseTotal = rate * band.mid;
-                const estTwoChannelTotal = baseTotal + (baseTotal * 0.5); // 50% discount for second channel
+                const blendedRate = calculateBlended(band.mid, currentType);
+                const baseChannelCost = blendedRate * band.mid;
+                blendedDisplay.innerText = `$${blendedRate.toFixed(2)}`;
                 
-                mainPrice.innerText = `$${estTwoChannelTotal.toLocaleString(undefined, {maximumFractionDigits:0})}`;
-                unitLabel.innerText = '/ estimated project';
-                subtext.innerText = `Based on ${band.mid.toLocaleString()} SKUs across 2 channels (Incl. 50% second-channel discount)`;
-                logicBox.classList.remove('hidden');
-                updateROI(estTwoChannelTotal, band.mid * 2);
+                // Channel 1
+                totalInvestment += baseChannelCost;
+                transparencyHTML += `
+                    <tr>
+                        <td class="p-4 font-bold">Primary Channel</td>
+                        <td class="p-4 text-slate-400">${band.mid.toLocaleString()} SKUs × $${blendedRate.toFixed(2)}</td>
+                        <td class="p-4 text-right">$${baseChannelCost.toLocaleString(undefined, {maximumFractionDigits:0})}</td>
+                    </tr>
+                `;
+
+                // Additional Channels
+                if(channelCount > 1) {
+                    const addlChannelCost = baseChannelCost * 0.5;
+                    const addlCount = channelCount - 1;
+                    const addlTotal = addlChannelCost * addlCount;
+                    totalInvestment += addlTotal;
+                    
+                    transparencyHTML += `
+                        <tr class="text-emerald-700 bg-emerald-50/50">
+                            <td class="p-4 font-bold">Add-on Channels (${addlCount})</td>
+                            <td class="p-4 italic">50% Reuse Discount applied</td>
+                            <td class="p-4 text-right">+$${addlTotal.toLocaleString(undefined, {maximumFractionDigits:0})}</td>
+                        </tr>
+                    `;
+                }
             }
 
-            // List Updates
-            document.getElementById('includes-list').innerHTML = data.includes.map(i => `<li>${i}</li>`).join('');
-            document.getElementById('excludes-list').innerHTML = data.excludes.map(i => `<li>${i}</li>`).join('');
+            mainPrice.innerText = `$${totalInvestment.toLocaleString(undefined, {maximumFractionDigits:0})}`;
+            totalSum.innerText = `$${totalInvestment.toLocaleString(undefined, {maximumFractionDigits:0})}`;
+            transparencyBody.innerHTML = transparencyHTML;
+            
+            const badge = document.getElementById('badge');
+            badge.className = `px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-4 inline-block ${data.badge}`;
+            badge.innerText = data.badgeText;
+            
+            document.getElementById('includes-list').innerHTML = data.includes.map(i => `<li class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-slate-300"></div>${i}</li>`).join('');
             document.getElementById('use-case').innerText = data.useCase;
         }
 
-        function updateROI(total, skus) {
-            // Assume 5% conversion and $35 AOV for a rough estimate
-            const potentialRev = Math.round(skus * 0.05 * 35);
-            const ratio = Math.min(Math.round((potentialRev / total) * 100), 100);
-            
-            document.getElementById('roi-ratio').innerText = ratio >= 100 ? "High Potential" : ratio + "%";
-            document.getElementById('roi-bar').style.width = ratio + "%";
-            document.getElementById('roi-text').innerText = `Break-even achieved at ~${Math.round(total / 35)} total sales. For a catalog of this size, this typically represents less than 2% of total listed volume.`;
-        }
-
-        // Init
         setType('training');
     </script>
 </body>
