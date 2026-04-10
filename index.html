@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UniCon | SLG Pricing Engine</title>
+    <title>UniCon | Enterprise SLG Pricing</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
@@ -19,23 +19,21 @@
         <div class="bg-slate-900 p-8 text-white">
             <div class="flex justify-between items-center mb-4">
                 <span class="text-emerald-400 font-bold tracking-tighter text-2xl">UniCon <span class="text-white font-light">Services</span></span>
-                <span class="bg-slate-800 px-4 py-1 rounded-full text-[10px] font-mono text-slate-400">DYNAMIC PRICING ENGINE v2.6</span>
+                <span class="bg-slate-800 px-4 py-1 rounded-full text-[10px] font-mono text-slate-400">ENTERPRISE BUNDLE LOGIC v2.7</span>
             </div>
             <h1 class="text-3xl font-bold">SLG Pricing Calculator</h1>
-            <p class="text-slate-400 mt-2">Professional listing services and guided onboarding tiers.</p>
+            <p class="text-slate-400 mt-2">Volume-optimized pricing with multi-channel bundling caps.</p>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-0">
-            
             <div class="lg:col-span-4 p-8 border-r border-slate-100 bg-slate-50/50">
                 <div class="space-y-10">
-                    
                     <div>
                         <label class="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-4">1. Service Level</label>
                         <div class="grid grid-cols-1 gap-2">
-                            <button onclick="setType('training')" data-type="training" class="tab w-full text-left px-4 py-3 rounded-xl border border-slate-200 font-semibold text-slate-600 hover:bg-white transition-all">30-Day Support</button>
-                            <button onclick="setType('standard')" data-type="standard" class="tab active w-full text-left px-4 py-3 rounded-xl border border-slate-200 font-semibold text-slate-600 hover:bg-white transition-all">Standard Listing</button>
-                            <button onclick="setType('advanced')" data-type="advanced" class="tab w-full text-left px-4 py-3 rounded-xl border border-slate-200 font-semibold text-slate-600 hover:bg-white transition-all">Advanced Optimization</button>
+                            <button onclick="setType('training')" data-type="training" class="tab w-full text-left px-4 py-3 rounded-xl border border-slate-200 font-semibold text-slate-600 hover:bg-white">30-Day Support</button>
+                            <button onclick="setType('standard')" data-type="standard" class="tab active w-full text-left px-4 py-3 rounded-xl border border-slate-200 font-semibold text-slate-600 hover:bg-white">Standard Listing</button>
+                            <button onclick="setType('advanced')" data-type="advanced" class="tab w-full text-left px-4 py-3 rounded-xl border border-slate-200 font-semibold text-slate-600 hover:bg-white">Advanced Optimization</button>
                         </div>
                     </div>
 
@@ -48,7 +46,6 @@
                             </div>
                             <input type="range" id="sku-slider" min="100" max="20000" value="750" step="50" oninput="updateFromSlider()" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer">
                         </div>
-                        
                         <div id="band-container" class="grid grid-cols-2 gap-2"></div>
                     </div>
 
@@ -57,7 +54,7 @@
                         <div class="bg-white p-4 rounded-2xl border border-slate-200">
                             <div class="flex justify-between font-bold text-slate-800 mb-2">
                                 <span id="channel-count-display">1 Channel</span>
-                                <span class="text-emerald-600 text-[10px]">-50% Multi-Disc.</span>
+                                <span class="text-emerald-600 text-[10px]">Bundle Cap Active</span>
                             </div>
                             <input type="range" id="channel-slider" min="1" max="7" value="1" step="1" oninput="update()" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer">
                         </div>
@@ -137,23 +134,20 @@
 
         const CONTENT = {
             training: {
-                badge: "bg-blue-600 text-white",
-                badgeText: "30-Day Support",
-                fees: [799, 1499, 1999, 2999], // Updated Starter fee to 799
+                badge: "bg-blue-600 text-white", badgeText: "30-Day Support",
+                fees: [799, 1499, 1999, 2999],
                 includes: ["Dedicated eCommerce Specialist", "Strategic SOP Documentation", "Workflow Optimization", "Live Training Sessions (1 per week)"],
-                useCase: "Focuses on knowledge transfer and team enablement. Perfect for brands that want to manage UniCon independently."
+                useCase: "Focuses on knowledge transfer. Perfect for brands that want to manage UniCon independently."
             },
             standard: {
-                badge: "bg-amber-500 text-white",
-                badgeText: "Standard Listing",
-                includes: ["Compliance-ready Mapping", "Taxonomy Categorization", "Bulk Feed Submission", "Basic Suppression Resolution", "NO Additional Attributes added", "NO content rewrite or AI generation"],
-                useCase: "Optimized for speed. Uses existing data to meet mandatory marketplace requirements. No optimization or content filling included."
+                badge: "bg-amber-500 text-white", badgeText: "Standard Listing",
+                includes: ["Compliance-ready Mapping", "Taxonomy Categorization", "Bulk Feed Submission", "Basic Suppression Resolution", "NO Additional Attributes", "NO content rewrite"],
+                useCase: "Optimized for speed. Uses existing data to meet mandatory marketplace requirements. No optimization included."
             },
             advanced: {
-                badge: "bg-emerald-600 text-white",
-                badgeText: "Advanced Optimization",
+                badge: "bg-emerald-600 text-white", badgeText: "Advanced Optimization",
                 includes: ["Required + Optional Attributes", "Missing Title & Description Filling", "AI-Powered Attribute Enrichment", "Global Suppression Audit", "Category-Specific Keywords", "NO general content rewriting"],
-                useCase: "Flags high-value products by filling optional attribute gaps and correcting missing core data. Focuses on filter discoverability."
+                useCase: "Flags high-value products by filling optional attribute gaps. Focuses on filter discoverability."
             }
         };
 
@@ -228,13 +222,22 @@
                 const baseCost = blendedRate * exactQty;
                 blendedDisplay.innerText = `$${blendedRate.toFixed(2)}`;
                 
+                // Channel 1
                 totalInvestment += baseCost;
-                transparencyHTML += `<tr><td class="p-4 font-bold">Channel 1 Setup</td><td class="p-4 text-slate-400">${exactQty.toLocaleString()} SKUs × $${blendedRate.toFixed(2)}</td><td class="p-4 text-right">$${baseCost.toLocaleString(undefined, {maximumFractionDigits:0})}</td></tr>`;
+                transparencyHTML += `<tr><td class="p-4 font-bold">Primary Channel</td><td class="p-4 text-slate-400">${exactQty.toLocaleString()} SKUs × $${blendedRate.toFixed(2)}</td><td class="p-4 text-right">$${baseCost.toLocaleString(undefined, {maximumFractionDigits:0})}</td></tr>`;
 
-                if(channelCount > 1) {
-                    const multiChannelTotal = (baseCost * 0.5) * (channelCount - 1);
-                    totalInvestment += multiChannelTotal;
-                    transparencyHTML += `<tr class="bg-emerald-50 text-emerald-800"><td class="p-4 font-bold">Expansion Channels</td><td class="p-4 italic">${channelCount - 1} Channels @ 50% Disc.</td><td class="p-4 text-right">+$${multiChannelTotal.toLocaleString(undefined, {maximumFractionDigits:0})}</td></tr>`;
+                // Channel 2 & 3 (50% each)
+                if(channelCount >= 2) {
+                    const addOnCount = Math.min(channelCount - 1, 2); // Max 2 discounted channels
+                    const addOnTotal = (baseCost * 0.5) * addOnCount;
+                    totalInvestment += addOnTotal;
+                    transparencyHTML += `<tr class="bg-emerald-50 text-emerald-800"><td class="p-4 font-bold">Expansion Channels (${addOnCount})</td><td class="p-4 italic">50% Mapping Reuse Discount</td><td class="p-4 text-right">+$${addOnTotal.toLocaleString(undefined, {maximumFractionDigits:0})}</td></tr>`;
+                }
+
+                // Channel 4, 5, 6, 7 (FREE Bundle)
+                if(channelCount > 3) {
+                    const freeCount = channelCount - 3;
+                    transparencyHTML += `<tr class="bg-blue-50 text-blue-800"><td class="p-4 font-bold">Additional Channels (${freeCount})</td><td class="p-4 italic">Enterprise Bundle: Included FREE</td><td class="p-4 text-right">+$0</td></tr>`;
                 }
             }
 
