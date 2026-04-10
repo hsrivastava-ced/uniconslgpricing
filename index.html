@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UniCon | Professional SLG Pricing</title>
+    <title>UniCon | Tier-Segmented Pricing</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
@@ -19,10 +19,10 @@
         <div class="bg-slate-900 p-8 text-white">
             <div class="flex justify-between items-center mb-4">
                 <span class="text-emerald-400 font-bold tracking-tighter text-2xl">UniCon <span class="text-white font-light">Services</span></span>
-                <span class="bg-slate-800 px-4 py-1 rounded-full text-[10px] font-mono text-slate-400">PRICING v2.8 (MINIMUMS ACTIVE)</span>
+                <span class="bg-slate-800 px-4 py-1 rounded-full text-[10px] font-mono text-slate-400">TIER SEGMENTATION v3.0</span>
             </div>
             <h1 class="text-3xl font-bold">SLG Pricing Calculator</h1>
-            <p class="text-slate-400 mt-2">Dynamic setup quotes with minimum project floor protection.</p>
+            <p class="text-slate-400 mt-2">100% transparent pricing based on catalog volume and tier-specific channel effort.</p>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-0">
@@ -54,7 +54,7 @@
                         <div class="bg-white p-4 rounded-2xl border border-slate-200">
                             <div class="flex justify-between font-bold text-slate-800 mb-2">
                                 <span id="channel-count-display">1 Channel</span>
-                                <span class="text-emerald-600 text-[10px]">Bundle Cap Active</span>
+                                <span class="text-emerald-600 text-[10px]">Tier Flat Rates</span>
                             </div>
                             <input type="range" id="channel-slider" min="1" max="7" value="1" step="1" oninput="update()" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer">
                         </div>
@@ -66,12 +66,11 @@
                 <div class="flex flex-col md:flex-row justify-between items-start gap-6 mb-12">
                     <div>
                         <span id="badge" class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-4 inline-block"></span>
-                        <h2 class="text-slate-400 font-medium text-sm">Investment Summary</h2>
+                        <h2 class="text-slate-400 font-medium text-sm">Estimated Project Investment</h2>
                         <div class="flex items-baseline gap-2">
                             <span id="main-price" class="text-6xl font-black text-slate-900 leading-none">$0</span>
                             <span class="text-slate-400 text-xl font-light">USD</span>
                         </div>
-                        <p id="floor-note" class="text-emerald-600 text-[10px] font-bold mt-2 uppercase hidden">Minimum Project Value Applied</p>
                     </div>
                     <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 text-center md:text-right min-w-[160px]">
                         <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Effective Rate</p>
@@ -81,19 +80,19 @@
                 </div>
 
                 <div class="mb-12">
-                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Transparency Breakdown</h4>
+                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Pricing Transparency Breakdown</h4>
                     <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
                         <table class="w-full text-left text-sm">
                             <thead class="bg-slate-50 border-b border-slate-100 text-slate-500 font-bold text-[10px] uppercase">
                                 <tr>
                                     <th class="p-4">Service Component</th>
-                                    <th class="p-4">Logic</th>
+                                    <th class="p-4">Calculation Logic</th>
                                     <th class="p-4 text-right">Amount</th>
                                 </tr>
                             </thead>
                             <tbody id="transparency-body" class="divide-y divide-slate-100"></tbody>
                             <tfoot>
-                                <tr id="footer-row" class="bg-slate-900 text-white font-bold">
+                                <tr class="bg-slate-900 text-white font-bold">
                                     <td class="p-4 text-xs">Total Quote</td>
                                     <td></td>
                                     <td id="total-sum" class="p-4 text-right text-lg text-emerald-400"></td>
@@ -118,13 +117,15 @@
     </div>
 
     <script>
+        // BANDS now contain exactly how much an "Extra Channel" costs for that specific Tier
         const BANDS = [
-            { label: "Starter", min: 0, max: 1000 },
-            { label: "Growth", min: 1001, max: 3000 },
-            { label: "Scale", min: 3001, max: 8000 },
-            { label: "Enterprise", min: 8001, max: 20000 },
+            { label: "Starter", min: 0, max: 1000, addOnStd: 150, addOnAdv: 250 },
+            { label: "Growth", min: 1001, max: 3000, addOnStd: 300, addOnAdv: 500 },
+            { label: "Scale", min: 3001, max: 8000, addOnStd: 600, addOnAdv: 900 },
+            { label: "Enterprise", min: 8001, max: 20000, addOnStd: 1000, addOnAdv: 1500 },
         ];
 
+        // Slabs handle only the Primary Mapping (Channel 1)
         const SLABS = [
             { upTo: 500, standard: 0.80, advanced: 1.50 },
             { upTo: 1000, standard: 0.65, advanced: 1.20 },
@@ -135,18 +136,18 @@
 
         const CONTENT = {
             training: {
-                badge: "bg-blue-600 text-white", badgeText: "30-Day Support", minPrice: 0,
+                badge: "bg-blue-600 text-white", badgeText: "30-Day Support",
                 fees: [799, 1499, 1999, 2999],
-                includes: ["Dedicated eCommerce Specialist", "Strategic SOP Documentation", "Workflow Optimization", "Live Training (1 per week)"],
+                includes: ["Dedicated eCommerce Specialist", "Strategic SOP Documentation", "Workflow Optimization", "Live Training Sessions (1 per week)"],
                 useCase: "Knowledge transfer and team enablement for long-term independent operations."
             },
             standard: {
-                badge: "bg-amber-500 text-white", badgeText: "Standard Listing", minPrice: 500,
+                badge: "bg-amber-500 text-white", badgeText: "Standard Listing",
                 includes: ["Compliance-ready Mapping", "Taxonomy Categorization", "Bulk Feed Submission", "Basic Suppression Resolution", "NO Additional Attributes", "NO content rewrite"],
                 useCase: "Optimized for speed. Uses existing data to meet mandatory requirements. No optimization included."
             },
             advanced: {
-                badge: "bg-emerald-600 text-white", badgeText: "Advanced Optimization", minPrice: 1000,
+                badge: "bg-emerald-600 text-white", badgeText: "Advanced Optimization",
                 includes: ["Required + Optional Attributes", "Missing Title & Description Filling", "AI-Powered Attribute Enrichment", "Global Suppression Audit", "Category-Specific Keywords", "NO general content rewriting"],
                 useCase: "Flags high-value products by filling optional attribute gaps. Focuses on filter discoverability."
             }
@@ -198,9 +199,12 @@
             const channelCount = parseInt(document.getElementById('channel-slider').value);
             document.getElementById('channel-count-display').innerText = `${channelCount} ${channelCount > 1 ? 'Channels' : 'Channel'}`;
 
+            const activeBand = BANDS.find(b => exactQty >= b.min && exactQty <= b.max) || BANDS[3];
+
+            // Render Tiers
             const bandContainer = document.getElementById('band-container');
             bandContainer.innerHTML = BANDS.map((b) => `
-                <div class="border transition-all px-3 py-2 rounded-xl text-center ${exactQty >= b.min && exactQty <= b.max ? 'card-selected border-emerald-500' : 'border-slate-100 bg-white opacity-40'}">
+                <div class="border transition-all px-3 py-2 rounded-xl text-center ${b === activeBand ? 'card-selected border-emerald-500' : 'border-slate-100 bg-white opacity-40'}">
                     <p class="text-[9px] font-black text-slate-800 uppercase">${b.label}</p>
                     <p class="text-[9px] text-slate-400 font-bold">${b.min}-${b.max}</p>
                 </div>
@@ -209,47 +213,32 @@
             const mainPrice = document.getElementById('main-price');
             const transparencyBody = document.getElementById('transparency-body');
             const blendedDisplay = document.getElementById('blended-rate-display');
-            const floorNote = document.getElementById('floor-note');
             
             let totalInvestment = 0;
             let transparencyHTML = '';
 
             if(currentType === 'training') {
-                const activeBand = BANDS.find(b => exactQty >= b.min && exactQty <= b.max) || BANDS[3];
                 totalInvestment = data.fees[BANDS.indexOf(activeBand)];
                 blendedDisplay.innerText = "N/A";
-                transparencyHTML = `<tr><td class="p-4 font-bold text-xs">Implementation</td><td class="p-4 text-slate-400 text-xs">${activeBand.label} Tier Fee</td><td class="p-4 text-right font-bold">$${totalInvestment.toLocaleString()}</td></tr>`;
-                floorNote.classList.add('hidden');
+                transparencyHTML = `<tr><td class="p-4 font-bold text-xs">Implementation</td><td class="p-4 text-slate-400 text-xs">${activeBand.label} Tier Flat Fee</td><td class="p-4 text-right font-bold">$${totalInvestment.toLocaleString()}</td></tr>`;
             } else {
+                // Primary Channel uses SKU Slabs
                 const blendedRate = calculateBlended(exactQty, currentType);
                 const baseCost = blendedRate * exactQty;
-                
-                let calculatedTotal = baseCost;
-                transparencyHTML += `<tr><td class="p-4 font-bold text-xs">Channel 1 Setup</td><td class="p-4 text-slate-400 text-xs">${exactQty.toLocaleString()} SKUs × $${blendedRate.toFixed(2)}</td><td class="p-4 text-right font-bold">$${baseCost.toLocaleString(undefined, {maximumFractionDigits:0})}</td></tr>`;
+                totalInvestment += baseCost;
 
-                if(channelCount >= 2) {
-                    const addOnCount = Math.min(channelCount - 1, 2);
-                    const addOnTotal = (baseCost * 0.5) * addOnCount;
-                    calculatedTotal += addOnTotal;
-                    transparencyHTML += `<tr class="bg-emerald-50 text-emerald-800"><td class="p-4 font-bold text-xs">Expansion (${addOnCount})</td><td class="p-4 italic text-[10px]">50% Multi-Channel Disc.</td><td class="p-4 text-right font-bold">+$${addOnTotal.toLocaleString(undefined, {maximumFractionDigits:0})}</td></tr>`;
+                transparencyHTML += `<tr><td class="p-4 font-bold text-xs">Primary Mapping</td><td class="p-4 text-slate-400 text-xs">${exactQty.toLocaleString()} SKUs × $${blendedRate.toFixed(2)}</td><td class="p-4 text-right font-bold">$${baseCost.toLocaleString(undefined, {maximumFractionDigits:0})}</td></tr>`;
+
+                // Additional Channels use the Flat Add-On Rate from the specific Tier
+                if(channelCount > 1) {
+                    const extraChannels = channelCount - 1;
+                    const addOnRate = currentType === 'standard' ? activeBand.addOnStd : activeBand.addOnAdv;
+                    const addOnTotal = extraChannels * addOnRate;
+                    totalInvestment += addOnTotal;
+
+                    transparencyHTML += `<tr class="bg-emerald-50 text-emerald-800"><td class="p-4 font-bold text-xs">Expansion Channels (${extraChannels})</td><td class="p-4 italic text-[10px]">Tier Flat Rate: $${addOnRate} per extra channel</td><td class="p-4 text-right font-bold">+$${addOnTotal.toLocaleString(undefined, {maximumFractionDigits:0})}</td></tr>`;
                 }
 
-                if(channelCount > 3) {
-                    const freeCount = channelCount - 3;
-                    transparencyHTML += `<tr class="bg-blue-50 text-blue-800"><td class="p-4 font-bold text-xs">Bundle Bonus (${freeCount})</td><td class="p-4 italic text-[10px]">Included in Enterprise Bundle</td><td class="p-4 text-right font-bold">+$0</td></tr>`;
-                }
-
-                // Apply Floor Logic
-                if (calculatedTotal < data.minPrice) {
-                    const floorAdj = data.minPrice - calculatedTotal;
-                    totalInvestment = data.minPrice;
-                    transparencyHTML += `<tr class="bg-amber-50 text-amber-800"><td class="p-4 font-bold text-xs">Project Minimum</td><td class="p-4 italic text-[10px]">Rounding up to Minimum Setup Fee</td><td class="p-4 text-right font-bold">+$${floorAdj.toLocaleString(undefined, {maximumFractionDigits:0})}</td></tr>`;
-                    floorNote.classList.remove('hidden');
-                } else {
-                    totalInvestment = calculatedTotal;
-                    floorNote.classList.add('hidden');
-                }
-                
                 blendedDisplay.innerText = `$${(totalInvestment / (exactQty * channelCount)).toFixed(2)}`;
             }
 
