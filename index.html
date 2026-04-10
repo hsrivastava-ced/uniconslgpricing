@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UniCon | Enterprise SLG Pricing</title>
+    <title>UniCon | Professional SLG Pricing</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
@@ -19,10 +19,10 @@
         <div class="bg-slate-900 p-8 text-white">
             <div class="flex justify-between items-center mb-4">
                 <span class="text-emerald-400 font-bold tracking-tighter text-2xl">UniCon <span class="text-white font-light">Services</span></span>
-                <span class="bg-slate-800 px-4 py-1 rounded-full text-[10px] font-mono text-slate-400">ENTERPRISE BUNDLE LOGIC v2.7</span>
+                <span class="bg-slate-800 px-4 py-1 rounded-full text-[10px] font-mono text-slate-400">PRICING v2.8 (MINIMUMS ACTIVE)</span>
             </div>
             <h1 class="text-3xl font-bold">SLG Pricing Calculator</h1>
-            <p class="text-slate-400 mt-2">Volume-optimized pricing with multi-channel bundling caps.</p>
+            <p class="text-slate-400 mt-2">Dynamic setup quotes with minimum project floor protection.</p>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-0">
@@ -31,9 +31,9 @@
                     <div>
                         <label class="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-4">1. Service Level</label>
                         <div class="grid grid-cols-1 gap-2">
-                            <button onclick="setType('training')" data-type="training" class="tab w-full text-left px-4 py-3 rounded-xl border border-slate-200 font-semibold text-slate-600 hover:bg-white">30-Day Support</button>
-                            <button onclick="setType('standard')" data-type="standard" class="tab active w-full text-left px-4 py-3 rounded-xl border border-slate-200 font-semibold text-slate-600 hover:bg-white">Standard Listing</button>
-                            <button onclick="setType('advanced')" data-type="advanced" class="tab w-full text-left px-4 py-3 rounded-xl border border-slate-200 font-semibold text-slate-600 hover:bg-white">Advanced Optimization</button>
+                            <button onclick="setType('training')" data-type="training" class="tab w-full text-left px-4 py-3 rounded-xl border border-slate-200 font-semibold text-slate-600 hover:bg-white transition-all">30-Day Support</button>
+                            <button onclick="setType('standard')" data-type="standard" class="tab active w-full text-left px-4 py-3 rounded-xl border border-slate-200 font-semibold text-slate-600 hover:bg-white transition-all">Standard Listing</button>
+                            <button onclick="setType('advanced')" data-type="advanced" class="tab w-full text-left px-4 py-3 rounded-xl border border-slate-200 font-semibold text-slate-600 hover:bg-white transition-all">Advanced Optimization</button>
                         </div>
                     </div>
 
@@ -42,9 +42,9 @@
                         <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm mb-4">
                             <div class="flex justify-between items-center mb-6">
                                 <span class="text-sm font-bold text-slate-700">Exact Count</span>
-                                <input type="number" id="sku-input" value="750" min="100" max="20000" oninput="updateFromInput()" class="w-24 px-3 py-1 bg-slate-50 border border-slate-200 rounded-lg text-right font-black text-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                <input type="number" id="sku-input" value="100" min="100" max="20000" oninput="updateFromInput()" class="w-24 px-3 py-1 bg-slate-50 border border-slate-200 rounded-lg text-right font-black text-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500">
                             </div>
-                            <input type="range" id="sku-slider" min="100" max="20000" value="750" step="50" oninput="updateFromSlider()" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer">
+                            <input type="range" id="sku-slider" min="100" max="20000" value="100" step="50" oninput="updateFromSlider()" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer">
                         </div>
                         <div id="band-container" class="grid grid-cols-2 gap-2"></div>
                     </div>
@@ -66,11 +66,12 @@
                 <div class="flex flex-col md:flex-row justify-between items-start gap-6 mb-12">
                     <div>
                         <span id="badge" class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-4 inline-block"></span>
-                        <h2 class="text-slate-400 font-medium text-sm">Estimated Project Investment</h2>
+                        <h2 class="text-slate-400 font-medium text-sm">Investment Summary</h2>
                         <div class="flex items-baseline gap-2">
                             <span id="main-price" class="text-6xl font-black text-slate-900 leading-none">$0</span>
                             <span class="text-slate-400 text-xl font-light">USD</span>
                         </div>
+                        <p id="floor-note" class="text-emerald-600 text-[10px] font-bold mt-2 uppercase hidden">Minimum Project Value Applied</p>
                     </div>
                     <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 text-center md:text-right min-w-[160px]">
                         <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Effective Rate</p>
@@ -86,14 +87,14 @@
                             <thead class="bg-slate-50 border-b border-slate-100 text-slate-500 font-bold text-[10px] uppercase">
                                 <tr>
                                     <th class="p-4">Service Component</th>
-                                    <th class="p-4">Calculation Logic</th>
+                                    <th class="p-4">Logic</th>
                                     <th class="p-4 text-right">Amount</th>
                                 </tr>
                             </thead>
                             <tbody id="transparency-body" class="divide-y divide-slate-100"></tbody>
                             <tfoot>
-                                <tr class="bg-slate-900 text-white font-bold">
-                                    <td class="p-4 text-xs">Total Contract Value</td>
+                                <tr id="footer-row" class="bg-slate-900 text-white font-bold">
+                                    <td class="p-4 text-xs">Total Quote</td>
                                     <td></td>
                                     <td id="total-sum" class="p-4 text-right text-lg text-emerald-400"></td>
                                 </tr>
@@ -104,11 +105,11 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div class="space-y-4">
-                        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Included Deliverables</h4>
+                        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Deliverables</h4>
                         <ul id="includes-list" class="space-y-2 text-xs text-slate-600"></ul>
                     </div>
                     <div class="space-y-4">
-                        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Scope Notes</h4>
+                        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Scope Note</h4>
                         <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 italic text-slate-600 text-xs leading-relaxed" id="use-case"></div>
                     </div>
                 </div>
@@ -134,25 +135,25 @@
 
         const CONTENT = {
             training: {
-                badge: "bg-blue-600 text-white", badgeText: "30-Day Support",
+                badge: "bg-blue-600 text-white", badgeText: "30-Day Support", minPrice: 0,
                 fees: [799, 1499, 1999, 2999],
-                includes: ["Dedicated eCommerce Specialist", "Strategic SOP Documentation", "Workflow Optimization", "Live Training Sessions (1 per week)"],
-                useCase: "Focuses on knowledge transfer. Perfect for brands that want to manage UniCon independently."
+                includes: ["Dedicated eCommerce Specialist", "Strategic SOP Documentation", "Workflow Optimization", "Live Training (1 per week)"],
+                useCase: "Knowledge transfer and team enablement for long-term independent operations."
             },
             standard: {
-                badge: "bg-amber-500 text-white", badgeText: "Standard Listing",
+                badge: "bg-amber-500 text-white", badgeText: "Standard Listing", minPrice: 500,
                 includes: ["Compliance-ready Mapping", "Taxonomy Categorization", "Bulk Feed Submission", "Basic Suppression Resolution", "NO Additional Attributes", "NO content rewrite"],
-                useCase: "Optimized for speed. Uses existing data to meet mandatory marketplace requirements. No optimization included."
+                useCase: "Optimized for speed. Uses existing data to meet mandatory requirements. No optimization included."
             },
             advanced: {
-                badge: "bg-emerald-600 text-white", badgeText: "Advanced Optimization",
+                badge: "bg-emerald-600 text-white", badgeText: "Advanced Optimization", minPrice: 1000,
                 includes: ["Required + Optional Attributes", "Missing Title & Description Filling", "AI-Powered Attribute Enrichment", "Global Suppression Audit", "Category-Specific Keywords", "NO general content rewriting"],
                 useCase: "Flags high-value products by filling optional attribute gaps. Focuses on filter discoverability."
             }
         };
 
         let currentType = 'standard';
-        let exactQty = 750;
+        let exactQty = 100;
 
         function setType(type) {
             currentType = type;
@@ -208,6 +209,7 @@
             const mainPrice = document.getElementById('main-price');
             const transparencyBody = document.getElementById('transparency-body');
             const blendedDisplay = document.getElementById('blended-rate-display');
+            const floorNote = document.getElementById('floor-note');
             
             let totalInvestment = 0;
             let transparencyHTML = '';
@@ -216,29 +218,39 @@
                 const activeBand = BANDS.find(b => exactQty >= b.min && exactQty <= b.max) || BANDS[3];
                 totalInvestment = data.fees[BANDS.indexOf(activeBand)];
                 blendedDisplay.innerText = "N/A";
-                transparencyHTML = `<tr><td class="p-4 font-bold">Implementation Plan</td><td class="p-4 text-slate-400">Fixed Fee (${activeBand.label} Tier)</td><td class="p-4 text-right">$${totalInvestment.toLocaleString()}</td></tr>`;
+                transparencyHTML = `<tr><td class="p-4 font-bold text-xs">Implementation</td><td class="p-4 text-slate-400 text-xs">${activeBand.label} Tier Fee</td><td class="p-4 text-right font-bold">$${totalInvestment.toLocaleString()}</td></tr>`;
+                floorNote.classList.add('hidden');
             } else {
                 const blendedRate = calculateBlended(exactQty, currentType);
                 const baseCost = blendedRate * exactQty;
-                blendedDisplay.innerText = `$${blendedRate.toFixed(2)}`;
                 
-                // Channel 1
-                totalInvestment += baseCost;
-                transparencyHTML += `<tr><td class="p-4 font-bold">Primary Channel</td><td class="p-4 text-slate-400">${exactQty.toLocaleString()} SKUs × $${blendedRate.toFixed(2)}</td><td class="p-4 text-right">$${baseCost.toLocaleString(undefined, {maximumFractionDigits:0})}</td></tr>`;
+                let calculatedTotal = baseCost;
+                transparencyHTML += `<tr><td class="p-4 font-bold text-xs">Channel 1 Setup</td><td class="p-4 text-slate-400 text-xs">${exactQty.toLocaleString()} SKUs × $${blendedRate.toFixed(2)}</td><td class="p-4 text-right font-bold">$${baseCost.toLocaleString(undefined, {maximumFractionDigits:0})}</td></tr>`;
 
-                // Channel 2 & 3 (50% each)
                 if(channelCount >= 2) {
-                    const addOnCount = Math.min(channelCount - 1, 2); // Max 2 discounted channels
+                    const addOnCount = Math.min(channelCount - 1, 2);
                     const addOnTotal = (baseCost * 0.5) * addOnCount;
-                    totalInvestment += addOnTotal;
-                    transparencyHTML += `<tr class="bg-emerald-50 text-emerald-800"><td class="p-4 font-bold">Expansion Channels (${addOnCount})</td><td class="p-4 italic">50% Mapping Reuse Discount</td><td class="p-4 text-right">+$${addOnTotal.toLocaleString(undefined, {maximumFractionDigits:0})}</td></tr>`;
+                    calculatedTotal += addOnTotal;
+                    transparencyHTML += `<tr class="bg-emerald-50 text-emerald-800"><td class="p-4 font-bold text-xs">Expansion (${addOnCount})</td><td class="p-4 italic text-[10px]">50% Multi-Channel Disc.</td><td class="p-4 text-right font-bold">+$${addOnTotal.toLocaleString(undefined, {maximumFractionDigits:0})}</td></tr>`;
                 }
 
-                // Channel 4, 5, 6, 7 (FREE Bundle)
                 if(channelCount > 3) {
                     const freeCount = channelCount - 3;
-                    transparencyHTML += `<tr class="bg-blue-50 text-blue-800"><td class="p-4 font-bold">Additional Channels (${freeCount})</td><td class="p-4 italic">Enterprise Bundle: Included FREE</td><td class="p-4 text-right">+$0</td></tr>`;
+                    transparencyHTML += `<tr class="bg-blue-50 text-blue-800"><td class="p-4 font-bold text-xs">Bundle Bonus (${freeCount})</td><td class="p-4 italic text-[10px]">Included in Enterprise Bundle</td><td class="p-4 text-right font-bold">+$0</td></tr>`;
                 }
+
+                // Apply Floor Logic
+                if (calculatedTotal < data.minPrice) {
+                    const floorAdj = data.minPrice - calculatedTotal;
+                    totalInvestment = data.minPrice;
+                    transparencyHTML += `<tr class="bg-amber-50 text-amber-800"><td class="p-4 font-bold text-xs">Project Minimum</td><td class="p-4 italic text-[10px]">Rounding up to Minimum Setup Fee</td><td class="p-4 text-right font-bold">+$${floorAdj.toLocaleString(undefined, {maximumFractionDigits:0})}</td></tr>`;
+                    floorNote.classList.remove('hidden');
+                } else {
+                    totalInvestment = calculatedTotal;
+                    floorNote.classList.add('hidden');
+                }
+                
+                blendedDisplay.innerText = `$${(totalInvestment / (exactQty * channelCount)).toFixed(2)}`;
             }
 
             mainPrice.innerText = `$${totalInvestment.toLocaleString(undefined, {maximumFractionDigits:0})}`;
