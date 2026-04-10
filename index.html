@@ -1,300 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniCon | SLG Pricing Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .gradient-text { background: linear-gradient(135deg, #1D9E75 0%, #0F6E56 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .tab-active { background: #1D9E75 !important; color: white !important; border-color: #1D9E75 !important; box-shadow: 0 4px 12px rgba(29, 158, 117, 0.2); }
+        .card-selected { border: 2px solid #1D9E75 !important; background: #f0fdf4 !important; }
+    </style>
+</head>
+<body class="p-4 md:p-8">
 
-<style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: var(--font-sans); }
-  .wrap { padding: 1.5rem 0; }
-  .section-title { font-size: 13px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; }
-  .tab-row { display: flex; gap: 8px; margin-bottom: 1.5rem; flex-wrap: wrap; }
-  .tab { padding: 8px 18px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); font-size: 13px; font-weight: 500; cursor: pointer; background: transparent; color: var(--color-text-secondary); transition: all 0.15s; }
-  .tab.active { background: #1D9E75; border-color: #1D9E75; color: #fff; }
-  .tab:hover:not(.active) { background: var(--color-background-secondary); }
-  .band-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin-bottom: 1.5rem; }
-  .band-card { border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 14px; cursor: pointer; transition: all 0.15s; background: var(--color-background-primary); }
-  .band-card.selected { border: 2px solid #1D9E75; }
-  .band-card .label { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 4px; }
-  .band-card .size { font-size: 17px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 2px; }
-  .band-card .desc { font-size: 11px; color: var(--color-text-tertiary); }
-  .result-box { border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem; background: var(--color-background-primary); margin-bottom: 1rem; }
-  .result-box .price-main { font-size: 28px; font-weight: 500; color: #1D9E75; }
-  .result-box .price-label { font-size: 13px; color: var(--color-text-secondary); margin-bottom: 4px; }
-  .result-box .price-sub { font-size: 12px; color: var(--color-text-tertiary); margin-top: 2px; }
-  .metrics-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 1.5rem; }
-  .metric { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 10px 12px; }
-  .metric .m-label { font-size: 11px; color: var(--color-text-secondary); margin-bottom: 4px; }
-  .metric .m-val { font-size: 15px; font-weight: 500; color: var(--color-text-primary); }
-  .metric .m-note { font-size: 10px; color: var(--color-text-tertiary); margin-top: 2px; }
-  .includes-list { margin-top: 10px; }
-  .includes-list li { font-size: 13px; color: var(--color-text-secondary); padding: 4px 0; display: flex; align-items: flex-start; gap: 8px; list-style: none; }
-  .includes-list li::before { content: ""; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #1D9E75; margin-top: 5px; flex-shrink: 0; }
-  .excludes-list li::before { background: #E24B4A !important; }
-  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 1.5rem; }
-  .sub-box { border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem; background: var(--color-background-primary); }
-  .sub-box h4 { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 8px; }
-  .use-case { background: #E1F5EE; border-radius: var(--border-radius-md); padding: 10px 14px; margin-bottom: 1rem; }
-  .use-case p { font-size: 13px; color: #085041; line-height: 1.5; }
-  .use-case .uc-label { font-size: 11px; font-weight: 500; color: #0F6E56; margin-bottom: 4px; }
-  .roi-bar-wrap { margin-top: 8px; }
-  .roi-bar-label { display: flex; justify-content: space-between; font-size: 11px; color: var(--color-text-secondary); margin-bottom: 4px; }
-  .roi-bar-bg { height: 8px; background: var(--color-background-secondary); border-radius: 4px; overflow: hidden; }
-  .roi-bar-fill { height: 8px; background: #1D9E75; border-radius: 4px; transition: width 0.4s; }
-  .channel-note { font-size: 12px; color: var(--color-text-secondary); background: var(--color-background-secondary); padding: 8px 12px; border-radius: var(--border-radius-md); margin-bottom: 1rem; }
-  .divider { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: 1.5rem 0; }
-  .badge { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: var(--border-radius-md); margin-bottom: 10px; }
-  .badge-green { background: #E1F5EE; color: #0F6E56; }
-  .badge-amber { background: #FAEEDA; color: #854F0B; }
-  .badge-blue { background: #E6F1FB; color: #185FA5; }
-  @media (max-width: 500px) { .metrics-row { grid-template-columns: 1fr 1fr; } .row2 { grid-template-columns: 1fr; } }
-</style>
+    <div class="max-w-5xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-200">
+        <div class="bg-slate-50 border-b border-slate-200 p-8 text-center">
+            <h1 class="text-3xl font-bold text-slate-900 mb-2">Service Level Agreement (SLG) Pricing</h1>
+            <p class="text-slate-500 max-w-2xl mx-auto">Professional listing and onboarding services for UniCon users. Optimized for high-volume catalogs with built-in multi-channel rewards.</p>
+        </div>
 
-<div class="wrap">
-  <h2 style="sr-only">UniCon SLG Pricing Tool</h2>
+        <div class="p-6 md:p-10">
+            <div class="mb-10">
+                <label class="block text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">1. Select Service Level</label>
+                <div class="flex flex-wrap gap-3" id="service-tabs">
+                    <button onclick="setType('training')" data-type="training" class="tab active px-6 py-3 rounded-xl border border-slate-200 font-semibold text-slate-600 hover:bg-slate-50 transition-all">30-Day Support</button>
+                    <button onclick="setType('standard')" data-type="standard" class="tab px-6 py-3 rounded-xl border border-slate-200 font-semibold text-slate-600 hover:bg-slate-50 transition-all">Standard Listing</button>
+                    <button onclick="setType('advanced')" data-type="advanced" class="tab px-6 py-3 rounded-xl border border-slate-200 font-semibold text-slate-600 hover:bg-slate-50 transition-all">Advanced Optimization</button>
+                </div>
+            </div>
 
-  <p class="section-title">Service type</p>
-  <div class="tab-row" id="tabs">
-    <button class="tab active" data-type="training">30-Day Training & Support</button>
-    <button class="tab" data-type="standard">Standard Listing</button>
-    <button class="tab" data-type="advanced">Advanced Listing</button>
-  </div>
+            <div class="mb-10">
+                <label class="block text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">2. Catalog Size (Total Products)</label>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="band-grid">
+                    </div>
+            </div>
 
-  <p class="section-title">Catalog size</p>
-  <div class="band-grid" id="bands"></div>
+            <div id="results" class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="bg-slate-50 rounded-2xl p-8 border border-slate-200 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-4">
+                            <span id="badge" class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest"></span>
+                        </div>
+                        
+                        <div class="flex flex-col md:flex-row justify-between items-end gap-6">
+                            <div>
+                                <h3 id="result-label" class="text-slate-500 font-medium mb-1">Estimated Cost</h3>
+                                <div class="flex items-baseline gap-2">
+                                    <span id="main-price" class="text-5xl font-extrabold text-slate-900">$0</span>
+                                    <span id="unit-label" class="text-slate-400 font-medium">/ project</span>
+                                </div>
+                                <p id="price-subtext" class="text-slate-500 text-sm mt-2 font-medium"></p>
+                            </div>
+                            <div class="w-full md:w-auto">
+                                <button class="w-full bg-slate-900 text-white px-8 py-4 rounded-xl font-bold hover:bg-slate-800 transition-all shadow-lg shadow-slate-200">Generate Quote PDF</button>
+                            </div>
+                        </div>
 
-  <div id="result-area"></div>
-</div>
+                        <div id="logic-box" class="mt-8 pt-8 border-t border-slate-200 hidden">
+                            <div class="flex items-center gap-2 mb-4">
+                                <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                <span class="font-bold text-slate-700">How we calculate volume</span>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                <div class="bg-white p-4 rounded-lg border border-slate-100 shadow-sm">
+                                    <p class="text-slate-400 mb-1">Volume Reward</p>
+                                    <p class="text-slate-700 leading-relaxed">We use <span class="font-semibold">blended slab pricing</span>. Larger catalogs get a lower effective rate per product.</p>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border border-slate-100 shadow-sm">
+                                    <p class="text-slate-400 mb-1">Multi-Channel Discount</p>
+                                    <p class="text-slate-700 leading-relaxed">Additional channels are billed at <span class="font-semibold text-emerald-600">50% off</span> as we reuse attribute mapping.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-<script>
-const BANDS = [
-  { label: "Starter", range: "500–1,000", mid: 750, desc: "New to multichannel" },
-  { label: "Growth", range: "1,000–3,000", mid: 2000, desc: "Expanding catalog" },
-  { label: "Scale", range: "3,000–8,000", mid: 5500, desc: "Established seller" },
-  { label: "Enterprise", range: "8,000–20,000", mid: 14000, desc: "Large catalog brand" },
-];
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-emerald-50 rounded-2xl p-6 border border-emerald-100">
+                            <h4 class="text-emerald-800 font-bold mb-4 flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                Included Services
+                            </h4>
+                            <ul id="includes-list" class="space-y-3 text-sm text-emerald-900 font-medium opacity-80"></ul>
+                        </div>
+                        <div class="bg-rose-50 rounded-2xl p-6 border border-rose-100">
+                            <h4 class="text-rose-800 font-bold mb-4 flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                Exclusions
+                            </h4>
+                            <ul id="excludes-list" class="space-y-3 text-sm text-rose-900 font-medium opacity-80"></ul>
+                        </div>
+                    </div>
+                </div>
 
-const PRICING = {
-  training: {
-    badge: "badge-blue",
-    badgeText: "Time-based · Fixed scope",
-    base: [999, 1499, 1999, 2999],
-    perChannel: [0, 0, 0, 0],
-    channelNote: "Covers up to 2 channels. +$299/additional channel.",
-    unit: "flat fee",
-    includes: [
-      "Dedicated eCommerce expert for 30 days",
-      "Up to 8 guided sessions (1hr each)",
-      "Channel-by-channel walkthrough (Walmart, Shein, Temu, eBay, TikTok Shop)",
-      "Live Q&A + async support via shared workspace",
-      "Workflow SOP documentation delivered at end of engagement",
-      "Onboarding health check on UniCon setup",
-    ],
-    excludes: [
-      "Hands-on listing execution",
-      "Content writing or optimization",
-      "Post-30-day ongoing support (renew at 50% discount)",
-    ],
-    useCaseFn: (band) => {
-      const cases = [
-        "A Walmart onboarding with 700 products — seller needs to understand channel mapping, required attributes, and suppression rules before going live.",
-        "A brand expanding to TikTok Shop & Shein simultaneously with ~2,000 products — needs guided setup, compliance rules, and team training.",
-        "A mid-size brand with 5,500 SKUs migrating from a manual process to UniCon — needs structured enablement across 3 channels.",
-        "An enterprise brand with 14,000 products onboarding a new ops team — needs SOP creation, channel governance training, and team certification.",
-      ];
-      return cases[band];
-    },
-    roiNote: (band, price) => {
-      const products = BANDS[band].mid;
-      const estRev = Math.round(products * 0.05 * 35);
-      return { label: `If 5% of ${products.toLocaleString()} products sell at avg $35 on a new channel`, value: `$${estRev.toLocaleString()} potential revenue`, ratio: Math.min(Math.round((estRev / price) * 100), 100) };
-    }
-  },
-  standard: {
-    badge: "badge-amber",
-    badgeText: "Per product · Required attributes only",
-    base: [0.80, 0.70, 0.60, 0.50],
-    perChannel: [0.40, 0.35, 0.30, 0.25],
-    unit: "per product / channel",
-    includes: [
-      "Title, price, category, brand — required fields only",
-      "Marketplace-compliant attribute mapping",
-      "Bulk upload via UniCon (no manual portal work)",
-      "Basic suppression review before submission",
-      "1 round of corrections included",
-    ],
-    excludes: [
-      "Content rewriting or SEO optimization",
-      "Optional/enhanced attributes",
-      "Image editing or A+ content",
-    ],
-    useCaseFn: (band) => {
-      const cases = [
-        "A seller with 800 products going live on Walmart — needs compliant listings fast without full optimization.",
-        "A brand launching 2,000 products on eBay and Temu — needs clean, suppression-free listings at scale.",
-        "A distributor with 5,500 products pushing to 3 channels — volume discounting makes standard listing cost-effective.",
-        "An enterprise with 14,000 products needing a fast 2-channel rollout before peak season.",
-      ];
-      return cases[band];
-    },
-    roiNote: (band, price) => {
-      const products = BANDS[band].mid;
-      const channels = band <= 1 ? 2 : band === 2 ? 3 : 4;
-      const totalCost = price * products * channels;
-      const estRev = Math.round(products * channels * 0.04 * 35);
-      const ratio = Math.min(Math.round((estRev / totalCost) * 100), 100);
-      return { label: `${channels} channels × ${products.toLocaleString()} products listed`, value: `~$${totalCost.toLocaleString()} total cost`, ratio };
-    }
-  },
-  advanced: {
-    badge: "badge-green",
-    badgeText: "Per product · AI-assisted content fill",
-    base: [3.50, 3.00, 2.50, 2.00],
-    perChannel: [1.75, 1.50, 1.25, 1.00],
-    unit: "per product / channel",
-    includes: [
-      "All required + optional attributes populated",
-      "Empty fields filled using AI + marketplace expertise",
-      "Category-specific attribute logic (e.g. Walmart GDSN, TikTok Shop taxonomy)",
-      "Suppression audit included",
-      "Channel-specific keyword placement (existing content only — no rewrite)",
-      "2 rounds of corrections included",
-    ],
-    excludes: [
-      "Title/description rewriting or SEO copywriting",
-      "Brand story, A+ content, or marketing copy",
-      "Image creation or editing",
-    ],
-    useCaseFn: (band) => {
-      const cases = [
-        "A beauty brand with 600 products going on TikTok Shop — optional attributes like skin type, finish, and ingredients drive discoverability.",
-        "A home goods brand with 2,000 products on Walmart — size, material, dimensions, and room type are critical for search ranking.",
-        "An apparel brand with 5,500 products on Shein & eBay — size charts, fabric, care instructions are all empty and must be filled.",
-        "A large electronics brand with 14,000 products — voltage, compatibility, certifications and optional specs need AI-assisted population at scale.",
-      ];
-      return cases[band];
-    },
-    roiNote: (band, price) => {
-      const products = BANDS[band].mid;
-      const channels = band <= 1 ? 2 : band === 2 ? 3 : 4;
-      const totalCost = price * products * channels;
-      const estRev = Math.round(products * channels * 0.06 * 35);
-      const ratio = Math.min(Math.round((estRev / totalCost) * 100), 100);
-      return { label: `Optimized attributes drive higher impressions → ${channels} channels`, value: `~$${totalCost.toLocaleString()} total cost`, ratio };
-    }
-  }
-};
-
-let activeType = "training";
-let activeBand = 0;
-
-function renderBands() {
-  const container = document.getElementById("bands");
-  container.innerHTML = BANDS.map((b, i) => `
-    <div class="band-card ${i === activeBand ? 'selected' : ''}" onclick="selectBand(${i})">
-      <div class="label">${b.label}</div>
-      <div class="size">${b.range}</div>
-      <div class="desc">${b.desc}</div>
-    </div>
-  `).join('');
-}
-
-function selectBand(i) {
-  activeBand = i;
-  renderBands();
-  renderResult();
-}
-
-function renderResult() {
-  const p = PRICING[activeType];
-  const b = BANDS[activeBand];
-  const basePrice = p.base[activeBand];
-  const addlChannel = p.perChannel[activeBand];
-  const roi = p.roiNote(activeBand, activeType === "training" ? basePrice : basePrice);
-
-  let priceDisplay, priceLabel, priceSub;
-  if (activeType === "training") {
-    priceDisplay = `$${basePrice.toLocaleString()}`;
-    priceLabel = "Flat engagement fee";
-    priceSub = `+$299 per additional channel beyond 2`;
-  } else {
-    priceDisplay = `$${basePrice.toFixed(2)}`;
-    priceLabel = `Per product, per channel`;
-    priceSub = `Additional channel rate: $${addlChannel.toFixed(2)}/product`;
-  }
-
-  const roi2 = p.roiNote(activeBand, basePrice);
-
-  document.getElementById("result-area").innerHTML = `
-    <div class="use-case">
-      <div class="uc-label">Typical use case</div>
-      <p>${p.useCaseFn(activeBand)}</p>
+                <div class="space-y-6">
+                    <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
+                        <h4 class="text-slate-900 font-bold mb-4 uppercase text-xs tracking-widest">Use Case Scenario</h4>
+                        <p id="use-case" class="text-slate-600 text-sm leading-relaxed italic"></p>
+                    </div>
+                    
+                    <div id="roi-card" class="bg-indigo-600 rounded-2xl p-6 text-white shadow-xl shadow-indigo-100">
+                        <h4 class="font-bold mb-2">Break-even Signal</h4>
+                        <div id="roi-ratio" class="text-3xl font-bold mb-4">0%</div>
+                        <div class="w-full bg-indigo-800 rounded-full h-2 mb-4">
+                            <div id="roi-bar" class="bg-indigo-300 h-2 rounded-full transition-all" style="width: 0%"></div>
+                        </div>
+                        <p id="roi-text" class="text-indigo-100 text-xs leading-relaxed"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="metrics-row">
-      <div class="result-box" style="grid-column: span 1;">
-        <div class="price-label">${priceLabel}</div>
-        <div class="price-main">${priceDisplay}</div>
-        <div class="price-sub">${priceSub}</div>
-      </div>
-      ${activeType !== "training" ? `
-      <div class="metric" style="display:flex;flex-direction:column;justify-content:center;">
-        <div class="m-label">Est. 2-channel total (${b.mid.toLocaleString()} products)</div>
-        <div class="m-val">$${(basePrice * b.mid * 2).toLocaleString(undefined, {maximumFractionDigits:0})}</div>
-        <div class="m-note">2 channels × ${b.range} products</div>
-      </div>
-      <div class="metric" style="display:flex;flex-direction:column;justify-content:center;">
-        <div class="m-label">Cost per product (all channels)</div>
-        <div class="m-val">$${(basePrice).toFixed(2)}</div>
-        <div class="m-note">Base channel rate</div>
-      </div>
-      ` : `
-      <div class="metric" style="display:flex;flex-direction:column;justify-content:center;">
-        <div class="m-label">Sessions included</div>
-        <div class="m-val">${activeBand <= 1 ? '8' : activeBand === 2 ? '10' : '12'} sessions</div>
-        <div class="m-note">1 hr each · 30-day window</div>
-      </div>
-      <div class="metric" style="display:flex;flex-direction:column;justify-content:center;">
-        <div class="m-label">Channels covered</div>
-        <div class="m-val">Up to ${activeBand <= 1 ? '2' : activeBand === 2 ? '3' : '4'}</div>
-        <div class="m-note">+$299 per extra</div>
-      </div>
-      `}
-    </div>
+    <script>
+        const BANDS = [
+            { label: "Starter", range: "500-1,000", mid: 750, desc: "New to multichannel" },
+            { label: "Growth", range: "1,001-3,000", mid: 2000, desc: "Expanding business" },
+            { label: "Scale", range: "3,001-8,000", mid: 5500, desc: "Established seller" },
+            { label: "Enterprise", range: "8,001-20,000", mid: 14000, desc: "High volume brand" },
+        ];
 
-    <div class="roi-bar-wrap" style="margin-bottom:1.5rem;">
-      <div class="roi-bar-label">
-        <span style="color:var(--color-text-secondary);font-size:12px;">ROI signal: ${roi2.label}</span>
-        <span style="color:#0F6E56;font-size:12px;font-weight:500;">${roi2.value}</span>
-      </div>
-      <div class="roi-bar-bg"><div class="roi-bar-fill" style="width:${roi2.ratio}%"></div></div>
-      <div style="font-size:10px;color:var(--color-text-tertiary);margin-top:4px;">Based on 4% sell-through × avg $35 AOV across new channels. Actual ROI varies.</div>
-    </div>
+        // The critical SLAB math (Incremental Pricing)
+        const SLABS = [
+            { upTo: 500, standard: 0.80, advanced: 1.50 },
+            { upTo: 1000, standard: 0.65, advanced: 1.20 },
+            { upTo: 3000, standard: 0.50, advanced: 0.90 },
+            { upTo: 8000, standard: 0.40, advanced: 0.65 },
+            { upTo: 20000, standard: 0.30, advanced: 0.45 }
+        ];
 
-    <div class="row2">
-      <div class="sub-box">
-        <h4>What's included</h4>
-        <ul class="includes-list">
-          ${p.includes.map(i => `<li>${i}</li>`).join('')}
-        </ul>
-      </div>
-      <div class="sub-box">
-        <h4>What's excluded</h4>
-        <ul class="includes-list excludes-list">
-          ${p.excludes.map(i => `<li>${i}</li>`).join('')}
-        </ul>
-      </div>
-    </div>
+        const CONTENT = {
+            training: {
+                badge: "bg-blue-100 text-blue-700",
+                badgeText: "30-Day Support",
+                fees: [999, 1499, 1999, 2999],
+                includes: ["Dedicated expert for 30 days", "Up to 8-12 guided sessions", "SOP workflow documentation", "Full channel health check"],
+                excludes: ["Hands-on listing creation", "Image editing", "Copywriting Services"],
+                useCase: "Ideal for teams who want to manage operations in-house but need a pro to guide the setup and avoid common marketplace pitfalls."
+            },
+            standard: {
+                badge: "bg-amber-100 text-amber-700",
+                badgeText: "Efficiency Plus",
+                includes: ["Required attributes mapping", "Category taxonomy alignment", "Bulk upload execution", "Basic suppression fixes"],
+                excludes: ["AI attribute population", "Keyword research", "Marketing copy improvements"],
+                useCase: "Perfect for high-volume catalogs that need to launch on new channels quickly using existing product data."
+            },
+            advanced: {
+                badge: "bg-emerald-100 text-emerald-700",
+                badgeText: "High-Visibility",
+                includes: ["Required + Optional attributes", "AI-assisted content population", "Suppression audit & fix", "Marketplace-specific keywords"],
+                excludes: ["Graphic design services", "A+ / EBC creation", "New product photography"],
+                useCase: "Best for brands where discoverability is key. We fill the gaps in your data to ensure you show up in every filter."
+            }
+        };
 
-    <button onclick="sendPrompt('Can you show me a summary comparison table of all 3 SLG service types and all 4 catalog bands for UniCon?')" style="font-size:13px;padding:8px 16px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:transparent;cursor:pointer;color:var(--color-text-secondary);">View full comparison table ↗</button>
-  `;
-}
+        let currentType = 'training';
+        let currentBandIndex = 0;
 
-document.getElementById("tabs").addEventListener("click", (e) => {
-  const btn = e.target.closest(".tab");
-  if (!btn) return;
-  activeType = btn.dataset.type;
-  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-  btn.classList.add("active");
-  renderResult();
-});
+        function setType(type) {
+            currentType = type;
+            document.querySelectorAll('.tab').forEach(t => {
+                t.classList.remove('tab-active');
+                if(t.dataset.type === type) t.classList.add('tab-active');
+            });
+            update();
+        }
 
-renderBands();
-renderResult();
-</script>
+        function setBand(index) {
+            currentBandIndex = index;
+            update();
+        }
+
+        function calculateBlended(qty, type) {
+            let total = 0; let rem = qty; let last = 0;
+            for(let slab of SLABS) {
+                let count = Math.min(rem, slab.upTo - last);
+                if(count <= 0) break;
+                total += count * slab[type];
+                rem -= count;
+                last = slab.upTo;
+            }
+            return total / qty;
+        }
+
+        function update() {
+            const data = CONTENT[currentType];
+            const band = BANDS[currentBandIndex];
+            
+            // Render Bands
+            const bandGrid = document.getElementById('band-grid');
+            bandGrid.innerHTML = BANDS.map((b, i) => `
+                <div onclick="setBand(${i})" class="cursor-pointer border-2 transition-all p-5 rounded-2xl ${i === currentBandIndex ? 'card-selected' : 'border-slate-100 bg-white hover:border-slate-200'}">
+                    <p class="text-[10px] uppercase font-bold text-slate-400 tracking-widest mb-1">${b.label}</p>
+                    <p class="text-lg font-bold text-slate-800">${b.range}</p>
+                    <p class="text-xs text-slate-500 mt-1">${b.desc}</p>
+                </div>
+            `).join('');
+
+            // Calculate Logic
+            const badge = document.getElementById('badge');
+            badge.className = `px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${data.badge}`;
+            badge.innerText = data.badgeText;
+
+            const unitLabel = document.getElementById('unit-label');
+            const mainPrice = document.getElementById('main-price');
+            const subtext = document.getElementById('price-subtext');
+            const logicBox = document.getElementById('logic-box');
+
+            if(currentType === 'training') {
+                const fee = data.fees[currentBandIndex];
+                mainPrice.innerText = `$${fee.toLocaleString()}`;
+                unitLabel.innerText = '/ engagement';
+                subtext.innerText = `Includes setup for up to ${currentBandIndex <= 1 ? 2 : currentBandIndex + 1} channels.`;
+                logicBox.classList.add('hidden');
+                updateROI(fee, 1);
+            } else {
+                const rate = calculateBlended(band.mid, currentType);
+                const baseTotal = rate * band.mid;
+                const estTwoChannelTotal = baseTotal + (baseTotal * 0.5); // 50% discount for second channel
+                
+                mainPrice.innerText = `$${estTwoChannelTotal.toLocaleString(undefined, {maximumFractionDigits:0})}`;
+                unitLabel.innerText = '/ estimated project';
+                subtext.innerText = `Based on ${band.mid.toLocaleString()} SKUs across 2 channels (Incl. 50% second-channel discount)`;
+                logicBox.classList.remove('hidden');
+                updateROI(estTwoChannelTotal, band.mid * 2);
+            }
+
+            // List Updates
+            document.getElementById('includes-list').innerHTML = data.includes.map(i => `<li>${i}</li>`).join('');
+            document.getElementById('excludes-list').innerHTML = data.excludes.map(i => `<li>${i}</li>`).join('');
+            document.getElementById('use-case').innerText = data.useCase;
+        }
+
+        function updateROI(total, skus) {
+            // Assume 5% conversion and $35 AOV for a rough estimate
+            const potentialRev = Math.round(skus * 0.05 * 35);
+            const ratio = Math.min(Math.round((potentialRev / total) * 100), 100);
+            
+            document.getElementById('roi-ratio').innerText = ratio >= 100 ? "High Potential" : ratio + "%";
+            document.getElementById('roi-bar').style.width = ratio + "%";
+            document.getElementById('roi-text').innerText = `Break-even achieved at ~${Math.round(total / 35)} total sales. For a catalog of this size, this typically represents less than 2% of total listed volume.`;
+        }
+
+        // Init
+        setType('training');
+    </script>
+</body>
+</html>
